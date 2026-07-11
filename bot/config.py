@@ -1,0 +1,71 @@
+"""
+Loads config.yaml + .env into a single Settings object used everywhere else.
+"""
+from __future__ import annotations
+
+import os
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any
+
+import yaml
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+@dataclass
+class SearchConfig:
+    name: str
+    query: str
+    min_price: float | None
+    max_price: float | None
+    platforms: list[str]
+
+
+@dataclass
+class Settings:
+    searches: list[SearchConfig]
+    poll_interval_seconds: int
+    inter_platform_delay_seconds: int
+    database_path: str
+    notify_discord: bool
+    notify_telegram: bool
+    log_level: str
+    log_file: str
+
+    ebay_client_id: str = field(default_factory=lambda: os.getenv("EBAY_CLIENT_ID", ""))
+    ebay_client_secret: str = field(default_factory=lambda: os.getenv("EBAY_CLIENT_SECRET", ""))
+    discord_webhook_url: str = field(default_factory=lambda: os.getenv("DISCORD_WEBHOOK_URL", ""))
+    telegram_bot_token: str = field(default_factory=lambda: os.getenv("TELEGRAM_BOT_TOKEN", ""))
+    telegram_chat_id: str = field(default_factory=lambda: os.getenv("TELEGRAM_CHAT_ID", ""))
+    vinted_cookie: str = field(default_factory=lambda: os.getenv("VINTED_COOKIE", ""))
+
+
+def load_settings(config_path: str = "config.yaml") -> Settings:
+    raw: dict[str, Any] = yaml.safe_load(Path(config_path).read_text())
+
+    searches = [
+        SearchConfig(
+            name=s["name"],
+            query=s["query"],
+            min_price=s.get("min_price"),
+            max_price=s.get("max_price"),
+            platforms=[p.lower() for p in s.get("platforms", [])],
+        )
+        for s in raw.get("searches", [])
+    ]
+
+    notifications = raw.get("notifications", {})
+    logging_cfg = raw.get("logging", {})
+
+    return Settings(
+        searches=searches,
+        poll_interval_seconds=int(raw.get("poll_interval_seconds", 300)),
+        inter_platform_delay_seconds=int(raw.get("inter_platform_delay_seconds", 3)),
+        database_path=raw.get("database_path", "seen_listings.db"),
+        notify_discord=bool(notifications.get("discord", False)),
+        notify_telegram=bool(notifications.get("telegram", False)),
+        log_level=logging_cfg.get("level", "INFO"),
+        log_file=logging_cfg.get("file", "resale_bot.log"),
+    )
