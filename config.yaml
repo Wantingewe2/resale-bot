@@ -1,71 +1,50 @@
-"""
-Loads config.yaml + .env into a single Settings object used everywhere else.
-"""
-from __future__ import annotations
+# Each entry under "searches" is run independently against every enabled platform.
+# Add as many as you want - e.g. one per item you're hunting for.
+searches:
+  - name: "Vintage Carhartt Jacket"
+    query: "vintage carhartt jacket"
+    min_price: 10
+    max_price: 80
+    platforms: [ebay, mercari, depop, vinted]
 
-import os
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any
+  - name: "Nike Dunk Low Panda"
+    query: "nike dunk low panda"
+    min_price: 20
+    max_price: 90
+    platforms: [ebay, depop]
 
-import yaml
-from dotenv import load_dotenv
+  - name: "JJK Manga"
+    query: "jujutsu kaisen manga"
+    min_price: 1
+    max_price: 8
+    platforms: [vinted]
 
-load_dotenv()
+  - name: "MHA Manga"
+    query: "my hero academia manga"
+    min_price: 1
+    max_price: 8
+    platforms: [vinted]
 
+  - name: "Demon Slayer Manga"
+    query: "demon slayer manga"
+    min_price: 1
+    max_price: 8
+    platforms: [vinted]
 
-@dataclass
-class SearchConfig:
-    name: str
-    query: str
-    min_price: float | None
-    max_price: float | None
-    platforms: list[str]
+  - name: "Chainsaw Man Manga"
+    query: "chainsaw man manga"
+    min_price: 1
+    max_price: 8
+    platforms: [vinted]
 
+poll_interval_seconds: 300
+inter_platform_delay_seconds: 3
+database_path: "seen_listings.db"
 
-@dataclass
-class Settings:
-    searches: list[SearchConfig]
-    poll_interval_seconds: int
-    inter_platform_delay_seconds: int
-    database_path: str
-    notify_discord: bool
-    notify_telegram: bool
-    log_level: str
-    log_file: str
+notifications:
+  discord: true
+  telegram: false
 
-    ebay_client_id: str = field(default_factory=lambda: os.getenv("EBAY_CLIENT_ID", ""))
-    ebay_client_secret: str = field(default_factory=lambda: os.getenv("EBAY_CLIENT_SECRET", ""))
-    discord_webhook_url: str = field(default_factory=lambda: os.getenv("DISCORD_WEBHOOK_URL", ""))
-    telegram_bot_token: str = field(default_factory=lambda: os.getenv("TELEGRAM_BOT_TOKEN", ""))
-    telegram_chat_id: str = field(default_factory=lambda: os.getenv("TELEGRAM_CHAT_ID", ""))
-    vinted_cookie: str = field(default_factory=lambda: os.getenv("VINTED_COOKIE", ""))
-
-
-def load_settings(config_path: str = "config.yaml") -> Settings:
-    raw: dict[str, Any] = yaml.safe_load(Path(config_path).read_text())
-
-    searches = [
-        SearchConfig(
-            name=s["name"],
-            query=s["query"],
-            min_price=s.get("min_price"),
-            max_price=s.get("max_price"),
-            platforms=[p.lower() for p in s.get("platforms", [])],
-        )
-        for s in raw.get("searches", [])
-    ]
-
-    notifications = raw.get("notifications", {})
-    logging_cfg = raw.get("logging", {})
-
-    return Settings(
-        searches=searches,
-        poll_interval_seconds=int(raw.get("poll_interval_seconds") or 300),
-        inter_platform_delay_seconds=int(raw.get("inter_platform_delay_seconds") or 3),
-        database_path=raw.get("database_path") or "seen_listings.db",
-        notify_discord=bool(notifications.get("discord", False)),
-        notify_telegram=bool(notifications.get("telegram", False)),
-        log_level=logging_cfg.get("level") or "INFO",
-        log_file=logging_cfg.get("file") or "resale_bot.log",
-    )
+logging:
+  level: "INFO"
+  file: "resale_bot.log"
