@@ -1,18 +1,36 @@
 # Each entry under "searches" is run independently against every enabled platform.
 # Add as many as you want - e.g. one per item you're hunting for.
 searches:
-  - name: "Vintage Carhartt Jacket"
-    query: "vintage carhartt jacket"
-    min_price: 10
-    max_price: 80
-    platforms: [ebay, mercari, depop, vinted]
 
-  - name: "Nike Dunk Low Panda"
+ - name: "Nike Dunk Low Panda"
     query: "nike dunk low panda"
     min_price: 20
     max_price: 90
     platforms: [ebay, depop]
 
+- name: "JJK Manga"
+    query: "jujutsu kaisen manga"
+    min_price: 1
+    max_price: 8
+    platforms: [vinted]
+
+  - name: "MHA Manga"
+    query: "my hero academia manga"
+    min_price: 1
+    max_price: 8
+    platforms: [vinted]
+
+  - name: "Demon Slayer Manga"
+    query: "demon slayer manga"
+    min_price: 1
+    max_price: 8
+    platforms: [vinted]
+
+  - name: "Chainsaw Man Manga"
+    query: "chainsaw man manga"
+    min_price: 1
+    max_price: 8
+    platforms: [vinted]
 # How often (seconds) to run a full pass over all searches.
 # Be reasonable - too low and you WILL get rate-limited / IP blocked on the
 # scraped platforms (mercari/depop/vinted). 300-600s (5-10 min) is a sane floor.
