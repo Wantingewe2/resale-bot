@@ -1,14 +1,19 @@
 # Each entry under "searches" is run independently against every enabled platform.
 # Add as many as you want - e.g. one per item you're hunting for.
 searches:
+  - name: "Vintage Carhartt Jacket"
+    query: "vintage carhartt jacket"
+    min_price: 10
+    max_price: 80
+    platforms: [ebay, mercari, depop, vinted]
 
- - name: "Nike Dunk Low Panda"
+  - name: "Nike Dunk Low Panda"
     query: "nike dunk low panda"
     min_price: 20
     max_price: 90
     platforms: [ebay, depop]
 
-- name: "JJK Manga"
+  - name: "JJK Manga"
     query: "jujutsu kaisen manga"
     min_price: 1
     max_price: 8
@@ -31,21 +36,11 @@ searches:
     min_price: 1
     max_price: 8
     platforms: [vinted]
+
 # How often (seconds) to run a full pass over all searches.
 # Be reasonable - too low and you WILL get rate-limited / IP blocked on the
 # scraped platforms (mercari/depop/vinted). 300-600s (5-10 min) is a sane floor.
 poll_interval_seconds: 300
 
 # Seconds to wait between hitting each platform, per search, to be polite.
-inter_platform_delay_seconds: 3
-
-# Where the "seen listings" dedupe database lives
-database_path: "seen_listings.db"
-
-notifications:
-  discord: true
-  telegram: false
-
-logging:
-  level: "INFO"
-  file: "resale_bot.log"
+inter_platform_delay_seconds:
