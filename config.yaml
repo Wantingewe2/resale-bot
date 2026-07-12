@@ -1,17 +1,6 @@
 # Each entry under "searches" is run independently against every enabled platform.
 # Add as many as you want - e.g. one per item you're hunting for.
 searches:
-  - name: "Vintage Carhartt Jacket"
-    query: "vintage carhartt jacket"
-    min_price: 10
-    max_price: 80
-    platforms: [ebay, mercari, depop, vinted]
-
-  - name: "Nike Dunk Low Panda"
-    query: "nike dunk low panda"
-    min_price: 20
-    max_price: 90
-    platforms: [ebay, depop]
 
   - name: "JJK Manga"
     query: "jujutsu kaisen manga"
